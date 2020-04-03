@@ -17,6 +17,7 @@
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* CoroNowTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* CoroNowTests.m */; };
+		2EE664312437A70D0040C2A9 /* rn-ble-plx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE664302437A70D0040C2A9 /* rn-ble-plx.swift */; };
 		96782493E17E8A0B2D853B3B /* libPods-CoroNow-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A9CC55848219F38788878EA /* libPods-CoroNow-tvOSTests.a */; };
 		CCB05BBAE2232B9A33F24C5A /* libPods-CoroNow-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C8E800E1653AE9107AF9DB1 /* libPods-CoroNow-tvOS.a */; };
 		E8CF9EAEF41BD405CC921317 /* libPods-CoroNow.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A139E78BE07450A95E609619 /* libPods-CoroNow.a */; };
@@ -55,6 +56,8 @@
 		217D6CA064881A7A75FD5077 /* Pods-CoroNow-CoroNowTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CoroNow-CoroNowTests.debug.xcconfig"; path = "Target Support Files/Pods-CoroNow-CoroNowTests/Pods-CoroNow-CoroNowTests.debug.xcconfig"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* CoroNow-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CoroNow-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* CoroNow-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "CoroNow-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2EE6642F2437A70D0040C2A9 /* CoroNow-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CoroNow-Bridging-Header.h"; sourceTree = "<group>"; };
+		2EE664302437A70D0040C2A9 /* rn-ble-plx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "rn-ble-plx.swift"; sourceTree = "<group>"; };
 		4C8E800E1653AE9107AF9DB1 /* libPods-CoroNow-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CoroNow-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		584659ABCBA14DC4CA12E140 /* Pods-CoroNow-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CoroNow-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-CoroNow-tvOSTests/Pods-CoroNow-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		5BEC78B4C4A22C04EC058588 /* libPods-CoroNow-CoroNowTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CoroNow-CoroNowTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -161,7 +164,6 @@
 				126CEBEF3EB265A3E7E4F486 /* Pods-CoroNow-tvOSTests.debug.xcconfig */,
 				584659ABCBA14DC4CA12E140 /* Pods-CoroNow-tvOSTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -175,12 +177,14 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				2EE664302437A70D0040C2A9 /* rn-ble-plx.swift */,
 				13B07FAE1A68108700A75B9A /* CoroNow */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* CoroNowTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				2EC200A42147587510196A76 /* Pods */,
+				2EE6642F2437A70D0040C2A9 /* CoroNow-Bridging-Header.h */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -292,7 +296,12 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1030;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -530,6 +539,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2EE664312437A70D0040C2A9 /* rn-ble-plx.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
@@ -584,6 +594,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 217D6CA064881A7A75FD5077 /* Pods-CoroNow-CoroNowTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -607,6 +618,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A7D6E7B6A55DE58F587D002F /* Pods-CoroNow-CoroNowTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = CoroNowTests/Info.plist;
@@ -644,6 +656,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = CoroNow;
+				SWIFT_OBJC_BRIDGING_HEADER = "CoroNow-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -666,6 +679,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = CoroNow;
+				SWIFT_OBJC_BRIDGING_HEADER = "CoroNow-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
