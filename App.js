@@ -1,114 +1,146 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
+import React from 'react'
+import { View, Text, Switch, ScrollView } from 'react-native'
+import { BleManager } from 'react-native-ble-plx'
 
-import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
-
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-const App: () => React$Node = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
-};
-
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
+const styles = {
+  title: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 30,
+    marginBottom: 16,
   },
-  engine: {
-    position: 'absolute',
-    right: 0,
+  bluetoothState: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginBottom: 16,
   },
-  body: {
-    backgroundColor: Colors.white,
+  switch: {
+    alignItems: 'center',
   },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
+  device: {
+    padding: 16,
     fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
+    color: 'gray',
   },
-});
+  scrollView: {
+    marginBottom: 150,
+  },
+}
 
-export default App;
+export class App extends React.Component {
+  manager = new BleManager({
+    restoreStateIdentifier: 'coronow',
+    restoreStateFunction: this.handleRestoreState,
+  })
+
+  state = {
+    bluetoothState: null,
+    isScanning: false,
+    devices: {},
+  }
+
+  componentDidMount() {
+    this.initialize()
+  }
+
+  isReady = () => this.state.bluetoothState === 'PoweredOn'
+
+  initialize = () => {
+    this.manager.onStateChange((bluetoothState) => {
+      this.setState({ bluetoothState })
+    }, true)
+  }
+
+  handleRestoreState = (bluetoothState) => {
+    this.setState({ bluetoothState })
+  }
+
+  startDeviceScan() {
+    this.setState({ isScanning: true }, () => {
+      this.manager.startDeviceScan(null, null, (error, device) => {
+        if (error) {
+          return
+        }
+        this.setDevice(this.normalizeDevice(device))
+      })
+    })
+  }
+
+  stopDeviceScan() {
+    this.setState({ isScanning: false }, () => {
+      this.manager.stopDeviceScan()
+    })
+  }
+
+  setDevice = (device) => {
+    this.setState((state) => ({
+      devices: {
+        ...state.devices,
+        [device.id]: device,
+      },
+    }))
+  }
+
+  normalizeDevice = (data) => ({
+    id: data.id,
+    connectionQuality: this.displayConnectionQuality(data.rssi),
+    rssi: data.rssi,
+    isConnectable: data.isConnectable,
+    localName: data.localName,
+    manufacturerData: data.manufacturerData,
+    mtu: data.mtu,
+    name: data.name,
+    overflowServiceUUIDs: data.overflowServiceUUIDs,
+    serviceData: data.serviceData,
+    serviceUUIDs: data.serviceUUIDs,
+    solicitedServiceUUIDs: data.solicitedServiceUUIDs,
+    txPowerLevel: data.txPowerLevel,
+  })
+
+  // http://www.veris.com/docs/whitePaper/vwp18_RSSI_RevA.pdf
+  displayConnectionQuality = (rssi) => {
+    if (rssi > -40) {
+      return 'Exceptional'
+    }
+    if (rssi > -55) {
+      return 'Very Good'
+    }
+    if (rssi > -70) {
+      return 'Good'
+    }
+    if (rssi > -80) {
+      return 'Marginal'
+    }
+    return 'Intermittent to No Operation'
+  }
+
+  toggleScanning = () => {
+    if (this.state.isScanning) {
+      this.stopDeviceScan()
+    } else {
+      this.startDeviceScan()
+    }
+  }
+
+  render() {
+    const { bluetoothState, devices, isScanning } = this.state
+    return (
+      <View>
+        <Text style={styles.title}>CoroNOW BLE ReactNative PoC</Text>
+        <Text style={styles.bluetoothState}>BLE state: {bluetoothState}</Text>
+        {this.isReady() ? (
+          <View style={styles.switch}>
+            <Switch onValueChange={this.toggleScanning} value={isScanning} />
+          </View>
+        ) : null}
+        <ScrollView style={styles.scrollView}>
+          {Object.values(devices).map((device) => (
+            <Text style={styles.device} key={device.id}>
+              {JSON.stringify(device, null, 2)}
+            </Text>
+          ))}
+        </ScrollView>
+      </View>
+    )
+  }
+}
